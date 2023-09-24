@@ -8,7 +8,7 @@ import lombok.Data;
 @Builder
 @Data
 public class ApiResponse {
-    JsonObject response;
+    private JsonObject response;
     private boolean success;
 }
 

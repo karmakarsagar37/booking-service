@@ -9,19 +9,22 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static com.airlines.booking.contants.DbConstants.USER_COLLECTION;
 
 @AllArgsConstructor
 public class UserDaoImpl implements UserDao {
-    @Autowired
     MongoTemplate mongoTemplate;
 
     @Override
     public User createUser(User user) {
         try {
+
             return mongoTemplate.insert(user, USER_COLLECTION);
         } catch (Exception e) {
-            throw new DatabaseException(String.format("[CREATE_USER] Exception while entering the Database! with Message: %s", e.getMessage()), e);
+            throw new DatabaseException(String.format("[CREATE_USER] Exception while inserting the entry in the Database! with Message: %s", e.getMessage()), e);
         }
     }
 
@@ -32,7 +35,16 @@ public class UserDaoImpl implements UserDao {
             query.addCriteria(Criteria.where("email").is(email));
             return mongoTemplate.findOne(query, User.class, USER_COLLECTION);
         } catch (Exception e) {
-            throw new DatabaseException(String.format("[CREATE_USER] Exception while entering the Database! with Message: %s", e.getMessage()), e);
+            throw new DatabaseException(String.format("[CREATE_USER] Exception while Querying the Database! with Message: %s", e.getMessage()), e);
+        }
+    }
+
+    @Override
+    public List<User> getAllUserDetails() {
+        try {
+            return mongoTemplate.findAll(User.class, USER_COLLECTION);
+        } catch (Exception e) {
+            throw new DatabaseException(String.format("[GET_ALL_USERS] Exception while entering the Database! with Message: %s", e.getMessage()), e);
         }
     }
 

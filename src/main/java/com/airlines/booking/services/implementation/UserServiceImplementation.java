@@ -9,6 +9,7 @@ import com.airlines.booking.payloads.UserDto;
 import com.airlines.booking.repo.CustomerRepo;
 import com.airlines.booking.repo.UserRepo;
 import com.airlines.booking.services.UserService;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,7 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Service;
 
+import java.io.Reader;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static com.airlines.booking.contants.ApiUtils.getApiResponseWhenException;
@@ -29,6 +34,7 @@ public class UserServiceImplementation implements UserService {
     private ModelMapper modelMapper;
     private UserDao userDao;
 
+
     @Override
     public ApiResponse createUser(UserDto userDto) {
         ApiResponse apiResponse;
@@ -36,12 +42,30 @@ public class UserServiceImplementation implements UserService {
         System.out.println("[SERVICE]: " + MONGODB_URL);
         try{
             User user = userDao.createUser(this.modelMapper.map(userDto , User.class));
+            JsonObject res =  new JsonObject();
+            res.add(USER_COLLECTION, GSON.toJsonTree(user));
             apiResponse = ApiResponse.builder()
                     .success(true)
-                    .response(GSON.toJsonTree(user).getAsJsonObject())
+                    .response(res)
                     .build();
 
             return apiResponse;
+        } catch(Exception e){
+            return getApiResponseWhenException(e);
+        }
+    }
+
+    @Override
+    public ApiResponse getAllUser() {
+        try{
+            List<User> users = this.userDao.getAllUserDetails();
+            System.out.println("[GetAllUser]" + users.toString());
+            JsonObject res =  new JsonObject();
+            res.add(USER_COLLECTION, GSON.toJsonTree(users));
+            return ApiResponse.builder()
+                    .success(true)
+                    .response(res)
+                    .build();
         } catch(Exception e){
             return getApiResponseWhenException(e);
         }
@@ -78,13 +102,7 @@ public class UserServiceImplementation implements UserService {
         return ApiResponse.builder().build();
     }
 
-    @Override
-    public ApiResponse getAllUser() {
-//        List<User> users= this.userRepo.findAll();
-//        List<UserDto> userDtos = users.stream().map( user -> this.userToDto(user)).collect(Collectors.toList());
 
-        return ApiResponse.builder().build();
-    }
 
     @Override
     public void deleteUser(Integer userId) {
