@@ -42,22 +42,17 @@ public class UserController {
         System.out.println("[DbConfigurationModule] DB_NAME: " + System.getProperty("DB_NAME"));
         return new ResponseEntity<ApiResponse>(createUserDto, HttpStatus.CREATED);
     }
-    @PutMapping("/{userId}")
-    public ResponseEntity<ApiResponse> updateUser(@RequestBody UserDto user,@PathVariable("userId") Integer userId) {
-        System.out.println(user.toString());
-        ApiResponse updatedUser = this.userService.updateUser(user,userId);
+    @PutMapping("/{email}")
+    public ResponseEntity<ApiResponse> updateUser(@RequestBody UserDto user,  @PathVariable("email") String email) {
+        ApiResponse updatedUser = this.userService.updateUser(user, email);
         System.out.println(updatedUser.toString());
-        return ResponseEntity.ok(updatedUser);
+        return new ResponseEntity<ApiResponse>(updatedUser, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{userId}")
-    public ResponseEntity<ApiResponse> deleteUser(@RequestBody UserDto user, @PathVariable("userId") Integer userId) {
-        this.userService.deleteUser(userId);
-        return new ResponseEntity<ApiResponse>(ApiResponse.builder()
-                .success(true)
-//                .message("User Deleted Successfully")
-                .build(),
-                HttpStatus.OK);
+    @DeleteMapping("/{email}")
+    public ResponseEntity<ApiResponse> deleteUser(@RequestBody UserDto user, @PathVariable("email") String email) {
+        ApiResponse apiResponse = this.userService.deleteUser(user, email);
+        return new ResponseEntity<ApiResponse>(apiResponse, HttpStatus.OK);
     }
 
     @GetMapping("/{email}")

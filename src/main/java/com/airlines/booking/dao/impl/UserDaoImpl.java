@@ -2,6 +2,7 @@ package com.airlines.booking.dao.impl;
 
 import com.airlines.booking.dao.UserDao;
 import com.airlines.booking.exceptions.DatabaseException;
+import com.airlines.booking.exceptions.NonRetryableException;
 import com.airlines.booking.exceptions.NotFoundException;
 import com.airlines.booking.exceptions.ResourceAlreadyExists;
 import com.airlines.booking.models.User;
@@ -56,12 +57,41 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User updateUserDetails(User user) {
-        return User.builder().build();
+    public User updateUserDetails(User user, String email) {
+        if(!this.userRepo.existsByEmail(user.getEmail())) {
+            throw new NotFoundException(String.format("User with emailId: %s does not exists in our database!", user.getEmail()));
+        }
+        User existingUser = this.userRepo.findByEmail(email);
+        if(!user.getPassword().equals(existingUser.getPassword())) {
+            throw new NonRetryableException(String.format("You cannot update the password through this API use the Reset Password API!",email));
+        }
+        existingUser.setAbout(user.getAbout());
+        existingUser.setName(user.getName());
+        try {
+            System.out.println(this.userRepo.deleteByEmail(email));
+            System.out.println("[TO BE SAVED]" + existingUser);
+            return this.userRepo.save(existingUser);
+        } catch (Exception e) {
+            throw new DatabaseException(String.format("[UPDATE_USER] Exception while entering the Database! with Message: %s", e.getMessage()), e);
+        }
     }
 
     @Override
-    public boolean deleteUser(String email, String password) {
-        return false;
+    public boolean deleteUser(User user, String email) {
+        if(!this.userRepo.existsByEmail(email)) {
+            throw new NotFoundException(String.format("User with emailId: %s does not exists in our database. Cannot delete non-existing entities it!", email));
+        }
+        //Check whether the password provided is same
+        User existingUser = this.userRepo.findByEmail(email);
+        if(!user.getPassword().equals(existingUser.getPassword())) {
+            throw new NonRetryableException(String.format("Password provided for the email: %s is incorrect. Pleas try again with the correct password!",email));
+        }
+        try {
+            Long res = this.userRepo.deleteByEmail(email);
+            System.out.println(res);
+            return res == 1;
+        } catch (Exception e) {
+            throw new DatabaseException(String.format("[UPDATE_USER] Exception while entering the Database! with Message: %s", e.getMessage()), e);
+        }
     }
 }
