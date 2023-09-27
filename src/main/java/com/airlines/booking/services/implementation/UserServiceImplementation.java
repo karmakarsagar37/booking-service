@@ -40,35 +40,29 @@ public class UserServiceImplementation implements UserService {
         ApiResponse apiResponse;
         System.out.println("[SERVICE]:" + userDto.toString());
         System.out.println("[SERVICE]: " + MONGODB_URL);
-        try{
-            User user = userDao.createUser(this.modelMapper.map(userDto , User.class));
-            JsonObject res =  new JsonObject();
-            res.add(USER_COLLECTION, GSON.toJsonTree(user));
-            apiResponse = ApiResponse.builder()
-                    .success(true)
-                    .response(res)
-                    .build();
 
-            return apiResponse;
-        } catch(Exception e){
-            return getApiResponseWhenException(e);
-        }
+        User user = userDao.createUser(this.modelMapper.map(userDto , User.class));
+        JsonObject res =  new JsonObject();
+        res.add(USER_COLLECTION, GSON.toJsonTree(user));
+        apiResponse = ApiResponse.builder()
+                .success(true)
+                .response(res)
+                .build();
+
+        return apiResponse;
+
     }
 
     @Override
     public ApiResponse getAllUser() {
-        try{
-            List<User> users = this.userDao.getAllUserDetails();
-            System.out.println("[GetAllUser]" + users.toString());
-            JsonObject res =  new JsonObject();
-            res.add(USER_COLLECTION, GSON.toJsonTree(users));
-            return ApiResponse.builder()
-                    .success(true)
-                    .response(res)
-                    .build();
-        } catch(Exception e){
-            return getApiResponseWhenException(e);
-        }
+        List<User> users = this.userDao.getAllUserDetails();
+        System.out.println("[GetAllUser]" + users.toString());
+        JsonObject res =  new JsonObject();
+        res.add(USER_COLLECTION, GSON.toJsonTree(users));
+        return ApiResponse.builder()
+                .success(true)
+                .response(res)
+                .build();
     }
 
     @Override
@@ -91,7 +85,8 @@ public class UserServiceImplementation implements UserService {
     }
 
     @Override
-    public ApiResponse getUserById(Integer userId) {
+    public ApiResponse getUserById(String email) {
+        User user = this.userDao.getUserDetails(email);
 
 //        User user=this.userRepo.findById(userId).orElseThrow( () -> ResourceNotFoundException
 //                .builder()
@@ -99,7 +94,12 @@ public class UserServiceImplementation implements UserService {
 //                .fieldName(" id")
 //                .fieldValue(userId)
 //                .build());
-        return ApiResponse.builder().build();
+        JsonObject res =  new JsonObject();
+        res.add(USER_COLLECTION, GSON.toJsonTree(user));
+        return ApiResponse.builder()
+                .success(true)
+                .response(res)
+                .build();
     }
 
 

@@ -10,10 +10,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Builder
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-@Document("user")
+@AllArgsConstructor
+@Document(collection = "user")
 public class User {
+	@Id
+	String _id;
 	String name;
 	@Indexed(unique = true)
 	String email;

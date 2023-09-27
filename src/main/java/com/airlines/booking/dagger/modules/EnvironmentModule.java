@@ -3,6 +3,7 @@ package com.airlines.booking.dagger.modules;
 import dagger.Module;
 import dagger.Provides;
 import org.springframework.core.env.Environment;
+import org.springframework.data.mongodb.repository.MongoRepository;
 
 import javax.inject.Named;
 import javax.inject.Singleton;

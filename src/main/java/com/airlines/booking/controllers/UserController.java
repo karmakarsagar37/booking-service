@@ -39,7 +39,7 @@ public class UserController {
         System.out.println("[TESTING DOT_ENV MONGODB_URL]" + environment.getProperty("MONGODB_URL"));
         System.out.println("[TESTING DOT_ENV DB_NAME]" + environment.getProperty("DB_NAME"));
         System.out.println("[RESPONSE CONTROLLER]: " + createUserDto.toString());
-        System.out.println("[DbConfigurationModule] DB_NAME: " + System.getProperty("spring.db.name"));
+        System.out.println("[DbConfigurationModule] DB_NAME: " + System.getProperty("DB_NAME"));
         return new ResponseEntity<ApiResponse>(createUserDto, HttpStatus.CREATED);
     }
     @PutMapping("/{userId}")
@@ -60,9 +60,9 @@ public class UserController {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<ApiResponse> getUser(@RequestBody UserDto user,@PathVariable("userId") Integer userId) {
-        ApiResponse userDto = this.userService.getUserById(userId);
+    @GetMapping("/{email}")
+    public ResponseEntity<ApiResponse> getUser(@RequestBody UserDto user,@PathVariable("email") String email) {
+        ApiResponse userDto = this.userService.getUserById(email);
         return new ResponseEntity<>(userDto , HttpStatus.OK);
     }
 

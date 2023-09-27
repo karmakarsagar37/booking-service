@@ -1,6 +1,6 @@
 package com.airlines.booking.exceptions;
 
-public class DatabaseException extends RuntimeException {
+public class DatabaseException extends RetryableException {
     public DatabaseException(String message){
         super(message);
     }
