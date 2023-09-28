@@ -1,0 +1,92 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: booking-dev
+  labels:
+    app: booking-dev
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: booking-dev
+  template:
+    metadata:
+      labels:
+        app: booking-dev
+    spec:
+      containers:
+      - name: booking-dev
+        image: sagardockerne/karmakarsagar37:user-0.0.3
+        # imagePullPolicy: Always
+        resources: 
+            limits:
+              cpu: 700m
+            requests:
+              cpu: 500m
+        ports:
+        - containerPort: 9095
+---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: booking-dev-svc
+#   labels:
+#     app: ${APP_NAME}
+#     env: ${SERVER_ENV}
+# spec:
+#   selector:
+#     app: ${APP_NAME}
+#     env: ${SERVER_ENV}
+#   type: NodePort
+#   ports:
+#     - protocol: TCP
+#       port: 80
+#       targetPort: 5000
+# ---
+apiVersion: v1
+kind: Service
+metadata:
+  name: booking-dev-svc
+spec:
+  type: NodePort
+  selector:
+    app: booking-dev
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 9095
+      nodePort: 30007
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: booking-dev-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx-example
+  rules:
+  - host: "sagar.test.dev"
+    http:
+      paths:
+      - path: /booking
+        pathType: Prefix
+        backend:
+          service:
+            name: booking-dev-svc
+            port:
+              number: 80
+---
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: booking-dev
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: booking-dev
+  minReplicas: 1
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 75
+  

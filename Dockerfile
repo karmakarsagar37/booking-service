@@ -1,6 +1,9 @@
 # Use Amazon Corretto 17 as the base image
 FROM amazoncorretto:17
 
+ENV MONGODB_URL=mongodb+srv://sagar:sagar12345@cluster0.ryfnwqt.mongodb.net/?retryWrites=true&w=majority
+ENV DB_NAME=booking-test
+
 # Set the working directory inside the container
 WORKDIR /app
 

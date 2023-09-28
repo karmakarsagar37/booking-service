@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @GetMapping("/{email}")
-    public ResponseEntity<ApiResponse> getUser(@RequestBody UserDto user,@PathVariable("email") String email) {
+    public ResponseEntity<ApiResponse> getUser(@PathVariable("email") String email) {
         ApiResponse userDto = this.userService.getUserById(email);
         return new ResponseEntity<>(userDto , HttpStatus.OK);
     }
