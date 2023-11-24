@@ -9,10 +9,10 @@ WORKDIR /app
 
 # Copy the Spring Boot application JAR file into the container
 
-COPY ./target/booking-0.0.1-SNAPSHOT.jar app.jar
+COPY ./target/java-aws-ecs-backend.jar java-aws-ecs-backend.jar
 
 # Expose the port that your Spring Boot application will run on
-EXPOSE 9095
+EXPOSE 8080
 
 # Define the command to run your Spring Boot application when the container starts
-CMD ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "java-aws-ecs-backend.jar"]

@@ -17,7 +17,6 @@ public class RepositoryModule {
     @Provides
     @Singleton
     public UserRepo provideYourEntityRepository(@Named("MongoTemplate") MongoTemplate mongoTemplate) {
-//        return new UserRepo(new MappingMongoEntityInformation<>(), mongoTemplate);
         return new MongoRepositoryFactory(mongoTemplate).getRepository(UserRepo.class);
     }
 }
