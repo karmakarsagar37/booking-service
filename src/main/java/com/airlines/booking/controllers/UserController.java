@@ -4,6 +4,7 @@ package com.airlines.booking.controllers;
 import com.airlines.booking.payloads.ApiResponse;
 import com.airlines.booking.payloads.UserDto;
 import com.airlines.booking.services.UserService;
+import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -67,6 +68,16 @@ public class UserController {
         return new ResponseEntity<ApiResponse>(usersDto,HttpStatus.OK);
     }
 
+    @GetMapping("/demo")
+    public ResponseEntity<ApiResponse> demoAPI() {
+        JsonObject res = new JsonObject();
+        res.addProperty("response", "Hello from Dummy API");
+        ApiResponse response = ApiResponse.builder()
+                .response(res)
+                .success(true)
+                .build();
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 
 
