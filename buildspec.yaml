@@ -27,7 +27,7 @@ phases:
     on-failure: ABORT
     commands:
       - echo Build completed on `date`
-      - echo Pushing the Docker image...
+      - echo Pushing the Docker image.....
       - DOCKER_CONTAINER_NAME=java-aws-ecs-backend
       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest > imageDefinitions.json
       - echo $DOCKER_CONTAINER_NAME
