@@ -28,7 +28,7 @@ phases:
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - DOCKER_CONTAINER_NAME=ecrcreationstack-ecsimagerepo3509ea85-npbqz1rzdt5x
+      - DOCKER_CONTAINER_NAME=java-aws-ecs-backend
       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest > imageDefinitions.json
       - echo $DOCKER_CONTAINER_NAME
       - echo printing imageDefinitions.json
