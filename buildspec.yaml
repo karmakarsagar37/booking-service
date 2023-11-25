@@ -2,6 +2,7 @@ version: 0.2
 
 phases:
   pre_build:
+    on-failure: ABORT
     commands:
       - echo Logging in to Amazon ECR...
       - aws --version
@@ -9,20 +10,22 @@ phases:
 #      - sudo apt-get update
 #      - sudo apt-get install -y git
   build:
+    on-failure: ABORT
     commands:
       - echo Build started on `date`
       - echo Building the Jar File...
       - mvn clean install
       - echo Building the Docker Image
-      - IMAGE_TAG = build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
+      - IMAGE_TAG=test
       - docker build -t $IMAGE_REPO_NAME:latest .
       - docker tag $IMAGE_REPO_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - docker tag $IMAGE_REPO_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
   post_build:
+    on-failure: ABORT
     commands:
       - echo Build completed on `date`
       - echo Pushing the Docker image...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$I MAGE_TAG
+      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
       - DOCKER_CONTAINER_NAME=java-aws-ecs-backend
       - printf '[{"name":"%s","imageUri":"%s"}]' $DOCKER_CONTAINER_NAME $REPOSITORY_URI:$IMAGE_TAG > imageDefinitions.json
