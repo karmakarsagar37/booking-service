@@ -14,7 +14,7 @@ phases:
       - echo Building the Jar File...
       - mvn clean install
       - echo Building the Docker Image
-      - IMAGE_TAG = $(git rev-parse HEAD)
+      - IMAGE_TAG = build-$(echo $CODEBUILD_BUILD_ID | awk -F":" '{print $2}')
       - docker build -t $IMAGE_REPO_NAME:latest .
       - docker tag $IMAGE_REPO_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$IMAGE_TAG
       - docker tag $IMAGE_REPO_NAME:latest $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:latest
